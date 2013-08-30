@@ -373,7 +373,7 @@ private:
     template <typename M>
     void push_back( M const & m )
     {
-        matchers.push_back( Matcher<T>( m.copy() ) );
+        matchers.push_back( m.copy() );
     }
 
     std::vector<Matcher<T>> matchers;
