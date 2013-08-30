@@ -1,7 +1,7 @@
 hamlest &ndash; matchers for lest
 =================================
 
-hamlest provides matchers for the tiny C++11 test helper lest [1]. hamlest's design is is inspired on the C++ version of hamcrest by Jon Reid [2,3] and on ideas found in PyHamcrest [4].
+hamlest provides matchers for the tiny C++11 test helper lest [1]. hamlest's design is inspired on the C++ version of hamcrest by Jon Reid [2,3] and on ideas found in PyHamcrest [4].
 
 Let writing tests become irresistibly easy and attractive.
 
@@ -126,7 +126,7 @@ Matcher functions to pull in.
 **starts_with(** _expected_ **)** - match the start of a string  
 **ends_with(** _expected_ **)** - match the end of a string  
 **contains(** _expected_ **)** -  match part of a string  
-**contains_regexp(** _expected_ **)** - match part of  string (fails with g++ 4.8.1)  
+**contains_regexp(** _expected_ **)** - match part of string (excluded from test: fails with Clang 3.2 and GNUC 4.8.1)  
 **matches_regexp(** _expected_ **)** - match whole string  
 
 #### Sequence
