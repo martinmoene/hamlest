@@ -111,7 +111,7 @@ Matcher functions to pull in.
 ### Matchers
 
 #### Object
-**same_instance(** _expected_ **)** - match same object  
+**same_instance** - match same object  
 
 #### Numeric
 **close_to** -  match number within a range delta  
