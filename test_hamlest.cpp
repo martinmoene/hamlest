@@ -187,6 +187,56 @@ const test specification[] =
         EXPECT( false == is_not( equal_to( hello() )( hello() ) )(true) );
     },
 
+    "expect_that generates no message exception for a succeeding test", []
+    {
+        test pass = { "P", [] { EXPECT_THAT( true, is( true ) ); } };
+
+        try { pass.behaviour(); }
+        catch(...) { throw lest::failure(lest::location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
+    },
+
+    "expect_that generates a message exception for a failing test", []
+    {
+        test fail = { "F", [] { EXPECT_THAT( false, is( true ) ); } };
+
+        for (;;)
+        {
+            try { fail.behaviour(); } catch ( lest::message & ) { break; }
+            throw lest::failure(lest::location{__FILE__,__LINE__}, "no error generated", "false");
+        }
+    },
+
+    "expect_that succeeds for success (match) and failure (non-match)", []
+    {
+        test pass[] = {{ "P", [] { EXPECT_THAT( true , is( true ) ); } }};
+        test fail[] = {{ "F", [] { EXPECT_THAT( false, is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    "expect_that succeeds with an unexpected standard exception", []
+    {
+        std::string text = "hello-world";
+        test pass[] = {{ "P", [=]() { EXPECT_THAT( (throw std::runtime_error(text), true), is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( pass, os ) );
+        EXPECT( std::string::npos != os.str().find(text) );
+    },
+
+    "expect_that succeeds with an unexpected non-standard exception", []
+    {
+        test pass[] = {{ "P", [] { EXPECT_THAT( (throw 77, true), is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( pass, os ) );
+    },
+
     "all_of matches properly", []
     {
         EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(a()) ) );
