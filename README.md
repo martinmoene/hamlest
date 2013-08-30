@@ -114,30 +114,30 @@ Matcher functions to pull in.
 **same_instance(** _expected_ **)** - match same object  
 
 #### Numeric
-**close_to(** _expected_, _delta_ **)** -  match number within a range delta  
-**equal_to(** _expected_ **)** - match equal  
-**not_equal_to(** _expected_ **)** - match not equal  
-**less_than(** _expected_ **)** - match less than  
-**less_equal(** _expected_ **)** - match less than or equal to  
-**greater_than(** _expected_ **)** - match greater than  
-**greater_equal(** _expected_ **)** - match greater than or equal to  
+**close_to** -  match number within a range delta  
+**equal_to** - match equal  
+**not_equal_to** - match not equal  
+**less_than** - match less than  
+**less_equal** - match less than or equal to  
+**greater_than** - match greater than  
+**greater_equal** - match greater than or equal to  
 
 #### Textual
-**starts_with(** _expected_ **)** - match the start of a string  
-**ends_with(** _expected_ **)** - match the end of a string  
-**contains(** _expected_ **)** -  match part of a string  
-**contains_regexp(** _expected_ **)** - match part of string (excluded from test: fails with Clang 3.2 and GNUC 4.8.1)  
-**matches_regexp(** _expected_ **)** - match whole string  
+**starts_with** - match the start of a string  
+**ends_with** - match the end of a string  
+**contains** -  match part of a string  
+**contains_regexp** - match part of string (excluded from test: fails with Clang 3.2 and GNUC 4.8.1)  
+**matches_regexp** - match whole string  
 
 #### Sequence
 No matchers yet.
 
 #### Logical
-**anything(** _expected_ **)** - match anything  
-**is(** _expected_ **)** -  decorate matcher to improve readability, or match a value  
-**is_not(** _expected_ **)** - negate the matcher  
-**all_of(** _expected_ **)** - `and` all matchers  
-**any_of(** _expected_ **)** - `or` all matchers  
+**anything** - match anything; takes optional description  
+**is** -  decorate matcher to improve readability, or match a value  
+**is_not** - negate the matcher  
+**all_of** - _and_ all matchers, or match all values in initialiser list  
+**any_of** - _or_ all matchers, or match any value in initialiser list  
 
 
 Reported to work with
@@ -155,7 +155,7 @@ Notes and References
 
 [2] [hamcrest](http://code.google.com/p/hamcrest/) on Google Code.  
 
-[3] [hamcrest C++](http://code.google.com/p/hamcrest/source/browse/trunk/hamcrest-c%2B%2B/?r=446) on Google Code.  
+[3] [hamcrest C++ by Jon Reid](http://code.google.com/p/hamcrest/source/browse/trunk/hamcrest-c%2B%2B/?r=446) on Google Code.  
 
 [4] [PyHamcrest](https://github.com/hamcrest/PyHamcrest) on GitHub
 
