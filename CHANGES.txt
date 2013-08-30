@@ -1,0 +1,6 @@
+Changes for hamlest – Matchers for lest
+
+
+version 0.0 2013-09-xx
+
+Initial release.
