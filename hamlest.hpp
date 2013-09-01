@@ -426,186 +426,185 @@ LEST_TAG_MATCHER( all_of_matcher );
 // matcher funtions to resolve types:
 
 template <typename T>
-close_to_matcher<T> close_to( T const & expected, T const & delta )
+inline close_to_matcher<T> close_to( T const & expected, T const & delta )
 {
     return close_to_matcher<T>( expected, delta );
 }
 
 template <typename T>
-equal_to_matcher<T> equal_to( T const & expected )
+inline equal_to_matcher<T> equal_to( T const & expected )
 {
     return equal_to_matcher<T>( expected );
 }
 
 template <typename T>
-equal_to_matcher<const T*> equal_to( const T expected[] )
+inline equal_to_matcher<const T*> equal_to( const T expected[] )
 {
     return equal_to_matcher<const T*>( expected );
 }
 
 template <typename T>
-not_equal_to_matcher<T> not_equal_to( T const & expected )
+inline not_equal_to_matcher<T> not_equal_to( T const & expected )
 {
     return not_equal_to_matcher<T>( expected );
 }
 
 template <typename T>
-not_equal_to_matcher<const T*> not_equal_to( const T expected[] )
+inline not_equal_to_matcher<const T*> not_equal_to( const T expected[] )
 {
     return not_equal_to_matcher<const T*>( expected );
 }
 
 template <typename T>
-less_than_matcher<T> less_than( T const & expected )
+inline less_than_matcher<T> less_than( T const & expected )
 {
     return less_than_matcher<T>( expected );
 }
 
 template <typename T>
-less_than_matcher<const T*> less_than( const T expected[] )
+inline less_than_matcher<const T*> less_than( const T expected[] )
 {
     return less_than_matcher<const T*>( expected );
 }
 
 template <typename T>
-less_equal_matcher<T> less_equal( T const & expected )
+inline less_equal_matcher<T> less_equal( T const & expected )
 {
     return less_equal_matcher<T>( expected );
 }
 
 template <typename T>
-less_equal_matcher<const T*> less_equal( const T expected[] )
+inline less_equal_matcher<const T*> less_equal( const T expected[] )
 {
     return less_equal_matcher<const T*>( expected );
 }
 
 template <typename T>
-greater_than_matcher<T> greater_than( T const & expected )
+inline greater_than_matcher<T> greater_than( T const & expected )
 {
     return greater_than_matcher<T>( expected );
 }
 
 template <typename T>
-greater_than_matcher<const T*> greater_than( const T expected[] )
+inline greater_than_matcher<const T*> greater_than( const T expected[] )
 {
     return greater_than_matcher<const T*>( expected );
 }
 
 template <typename T>
-greater_equal_matcher<T> greater_equal( T const & expected )
+inline greater_equal_matcher<T> greater_equal( T const & expected )
 {
     return greater_equal_matcher<T>( expected );
 }
 
 template <typename T>
-greater_equal_matcher<const T*> greater_equal( const T expected[] )
+inline greater_equal_matcher<const T*> greater_equal( const T expected[] )
 {
     return greater_equal_matcher<const T*>( expected );
 }
 
 template <typename T>
-same_instance_matcher<T> same_instance( T const & instance )
+inline same_instance_matcher<T> same_instance( T const & instance )
 {
     return same_instance_matcher<T>( instance );
 }
 
-starts_with_matcher starts_with( std::string const & text )
+inline starts_with_matcher starts_with( std::string const & text )
 {
     return starts_with_matcher( text );
 }
 
-ends_with_matcher ends_with( std::string const & text )
+inline ends_with_matcher ends_with( std::string const & text )
 {
     return ends_with_matcher( text );
 }
 
-contains_string_matcher contains( std::string const & text )
+inline contains_string_matcher contains( std::string const & text )
 {
     return contains_string_matcher( text );
 }
 
-contains_regexp_matcher contains_regexp( std::string const & expr )
+inline contains_regexp_matcher contains_regexp( std::string const & expr )
 {
     return contains_regexp_matcher( expr );
 }
 
-match_regexp_matcher matches_regexp( std::string const & expr )
+inline match_regexp_matcher matches_regexp( std::string const & expr )
 {
     return match_regexp_matcher( expr );
 }
 
 template <typename T>
-is_matcher<typename T::argument_type> is_implementation( T const & expected, matcher_tag )
+inline is_matcher<typename T::argument_type> is_implementation( T const & expected, matcher_tag )
 {
     return is_matcher<typename T::argument_type>( expected );
 }
 
 template <typename T>
-is_matcher<T> is_implementation( T const & expected, not_matcher_tag )
+inline is_matcher<T> is_implementation( T const & expected, not_matcher_tag )
 {
     return is_matcher<T>( equal_to( expected ) );
 }
 
 template <typename T>
-is_matcher<typename matcher_traits<T>::argument> is( T const & expected )
+inline is_matcher<typename matcher_traits<T>::argument> is( T const & expected )
 {
     return is_implementation( expected, typename matcher_traits<T>::category() );
 }
 
 template <typename T>
-is_matcher<const T*> is( const T expected[] )
+inline is_matcher<const T*> is( const T expected[] )
 {
     return is_implementation( expected, not_matcher_tag() );
 }
 
 template <typename T>
-is_not_matcher<typename T::argument_type> is_not_implementation( T const & expected, matcher_tag )
+inline is_not_matcher<typename T::argument_type> is_not_implementation( T const & expected, matcher_tag )
 {
     return is_not_matcher<typename T::argument_type>( expected );
 }
 
 template <typename T>
-is_not_matcher<T> is_not_implementation( T const & expected, not_matcher_tag )
+inline is_not_matcher<T> is_not_implementation( T const & expected, not_matcher_tag )
 {
     return is_not_matcher<T>( equal_to( expected ) );
 }
 
 template <typename T>
-is_not_matcher<typename matcher_traits<T>::argument> is_not( T const & expected )
+inline is_not_matcher<typename matcher_traits<T>::argument> is_not( T const & expected )
 {
     return is_not_implementation( expected, typename matcher_traits<T>::category() );
 }
 
 template <typename T>
-is_not_matcher<const T*> is_not( const T expected[] )
+inline is_not_matcher<const T*> is_not( const T expected[] )
 {
     return is_not_implementation( expected, not_matcher_tag() );
 }
 
 template <typename T>
-any_of_matcher<T> any_of( std::initializer_list<T> const & list )
+inline any_of_matcher<T> any_of( std::initializer_list<T> const & list )
 {
     return any_of_matcher<T>( list );
 }
 
 template <typename M, typename... Ms>
-any_of_matcher<typename M::argument_type> any_of( M const & m, Ms const &... ms )
+inline any_of_matcher<typename M::argument_type> any_of( M const & m, Ms const &... ms )
 {
     return any_of_matcher<typename M::argument_type>( m, ms... );
 }
 
 template <typename T>
-all_of_matcher<T> all_of( std::initializer_list<T> const & list )
+inline all_of_matcher<T> all_of( std::initializer_list<T> const & list )
 {
     return all_of_matcher<T>( list );
 }
 
 template <typename M, typename... Ms>
-all_of_matcher<typename M::argument_type> all_of( M const & m, Ms const &... ms )
+inline all_of_matcher<typename M::argument_type> all_of( M const & m, Ms const &... ms )
 {
     return all_of_matcher<typename M::argument_type>( m, ms... );
 }
-
 
 namespace match {
 
