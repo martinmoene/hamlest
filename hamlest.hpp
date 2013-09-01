@@ -222,11 +222,11 @@ struct ends_with_matcher : public matcher<std::string>
 /**
  * contains( text ).
  */
-struct contains_matcher : public matcher<std::string>
+struct contains_string_matcher : public matcher<std::string>
 {
-    explicit contains_matcher( std::string const & text ) : text( text ) { }
+    explicit contains_string_matcher( std::string const & text ) : text( text ) { }
 
-    Matcher<std::string> copy() const { return Matcher<std::string>( new contains_matcher( *this ) ); }
+    Matcher<std::string> copy() const { return Matcher<std::string>( new contains_string_matcher( *this ) ); }
 
     bool operator()(std::string const & actual) const { return std::string::npos != actual.find( text ); }
 
@@ -509,32 +509,27 @@ same_instance_matcher<T> same_instance( T const & instance )
     return same_instance_matcher<T>( instance );
 }
 
-template <typename T>
-starts_with_matcher starts_with( T const & text )
+starts_with_matcher starts_with( std::string const & text )
 {
     return starts_with_matcher( text );
 }
 
-template <typename T>
-ends_with_matcher ends_with( T const & text )
+ends_with_matcher ends_with( std::string const & text )
 {
     return ends_with_matcher( text );
 }
 
-template <typename T>
-contains_matcher contains( T const & text )
+contains_string_matcher contains( std::string const & text )
 {
-    return contains_matcher( text );
+    return contains_string_matcher( text );
 }
 
-template <typename T>
-contains_regexp_matcher contains_regexp( T const & expr )
+contains_regexp_matcher contains_regexp( std::string const & expr )
 {
     return contains_regexp_matcher( expr );
 }
 
-template <typename T>
-match_regexp_matcher matches_regexp( T const & expr )
+match_regexp_matcher matches_regexp( std::string const & expr )
 {
     return match_regexp_matcher( expr );
 }
