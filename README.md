@@ -10,6 +10,7 @@ Let writing tests become irresistibly easy and attractive.
 - [Compile and run](#compile-and-run)
 - [Synopsis](#synopsis)
 - [Reported to work with](#reported-to-work-with)
+- [Other libraries](#other-libraries)
 - [Notes and References](#notes-and-references)
 
 
@@ -91,11 +92,11 @@ Synopsis
 
 ### Assertions Macros
 **EXPECT_THAT(** _expr_, _matcher_ **)**  
-Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
+Match the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
-Note that EXPECT_THAT() is a shortened aliases for lest_EXPECT_THAT().
+Note that EXPECT_THAT() is a shortened alias for lest_EXPECT_THAT().
 
 ### Other Macros
 **lest_NO_SHORT_ASSERTION_NAMES**  
@@ -114,28 +115,32 @@ Matcher functions to pull in.
 **same_instance** - match same object  
 
 #### Numeric
-**close_to** -  match number within a range delta  
-**equal_to** - match equal  
-**not_equal_to** - match not equal  
-**less_than** - match less than  
-**less_equal** - match less than or equal to  
-**greater_than** - match greater than  
-**greater_equal** - match greater than or equal to  
+**close_to** -  match number within a range delta, e.g. close_to(10, 2)  
+**equal_to** - match equal, e.g. equal_to('a'), equal_to(vec)  
+**not_equal_to** - match not equal, e.g. not_equal_to("hello")  
+**less_than** - match less than, e.g. less_than(42)  
+**less_equal** - match less than or equal to, e.g. less_equal(42)    
+**greater_than** - match greater than, e.g. greater_than(42)    
+**greater_equal** - match greater than or equal to, e.g. greater_equal(42)    
 
 #### Textual
-**starts_with** - match the start of a string  
-**ends_with** - match the end of a string  
-**contains** -  match part of a string  
+**starts_with** - match the start of a string, e.g. starts_with("hello")  
+**ends_with** - match the end of a string, e.g. ends_with("world")  
+**contains** -  match part of a string, , e.g. contains("C++11")  
 **contains_regexp** - match part of string (excluded from test: fails with Clang 3.2 and GNUC 4.8.1)  
 **matches_regexp** - match whole string  
 
 #### Sequence
-No matchers yet.
+**contains** - match a sequence in a container, e.g. contains(3), contains({3,4})
+**contains_elements** - match elements in container, e.g. contains_elements({3,4})  
+**is_empty** - match empty container, e.g. is_empty()  
+**size_is** - match size of a container, e.g. size_is(2), size_is( less_than(3) )   
+Note: currently sequence matchers cannot be wrapped in logical matchers.  
 
 #### Logical
-**anything** - match anything; takes optional description  
-**is** -  decorate matcher to improve readability, or match a value  
-**is_not** - negate the matcher  
+**anything** - [a, an ?] match anything; takes optional description, e.g. anything<int>()  
+**is** -  decorate matcher to improve readability, or match a value, e.g. is(42)  
+**is_not** - negate the matcher, e.g. is_not(close_to(42,1))  
 **all_of** - _and_ all matchers, or match all values in initialiser list  
 **any_of** - _or_ all matchers, or match any value in initialiser list  
 
@@ -148,6 +153,12 @@ Reported to work with
 - (for lest: Visual Studio 2013 preview)
 
 
+Other libraries
+---------------
+
+Google C++ Mocking Framework, gmock - This framework has a rich set of matchers and actions [5].
+
+
 Notes and References
 --------------------
 
@@ -158,5 +169,7 @@ Notes and References
 [3] [hamcrest C++ by Jon Reid](http://code.google.com/p/hamcrest/source/browse/trunk/hamcrest-c%2B%2B/?r=446) on Google Code.  
 
 [4] [PyHamcrest](https://github.com/hamcrest/PyHamcrest) on GitHub
+
+[5] [Google C++ Mocking Framework](http://code.google.com/p/googlemock/) on Google Code.
 
 [![Build Status](https://travis-ci.org/martinmoene/hamlest.png?branch=master)](https://travis-ci.org/martinmoene/hamlest)
