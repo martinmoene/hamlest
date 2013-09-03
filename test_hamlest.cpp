@@ -16,8 +16,88 @@ char const *hello()       { return "hello"; }
 char const *world()       { return "world"; }
 char const *hello_world() { return "hello world"; }
 
+std::set<int> s{ 1, 2, 3, };
+std::set<int> t{ 2, 1, 0, };
+std::set<int> u;
+
 const test specification[] =
 {
+    "is decorates properly", []
+    {
+        EXPECT(  true == is(77)(77) );
+        EXPECT(  true == is( equal_to(77)(77) )(true) );
+        EXPECT(  true == is( hello() )( hello() ) );
+        EXPECT(  true == is( equal_to( hello() )( hello() ) )(true) );
+
+        EXPECT( false == is(77)(33) );
+        EXPECT( false == is( equal_to(77)(33) )(true) );
+        EXPECT( false == is( hello() )( world() ) );
+        EXPECT( false == is( equal_to( hello() )( world() ) )(true) );
+    },
+
+    "is_not decorates properly", []
+    {
+        EXPECT(  true == is_not(77)(33) );
+        EXPECT(  true == is_not( equal_to(77)(33) )(true) );
+        EXPECT(  true == is_not( hello() )( world() ) );
+        EXPECT(  true == is_not( equal_to( hello() )( world() ) )(true) );
+
+        EXPECT( false == is_not(77)(77) );
+        EXPECT( false == is_not( equal_to(77)(77) )(true) );
+        EXPECT( false == is_not( hello() )( hello() ) );
+        EXPECT( false == is_not( equal_to( hello() )( hello() ) )(true) );
+    },
+
+    "expect_that generates no message exception for a succeeding test", []
+    {
+        test pass = { "P", [] { EXPECT_THAT( true, is( true ) ); } };
+
+        try { pass.behaviour(); }
+        catch(...) { throw lest::failure(lest::location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
+    },
+
+    "expect_that generates a message exception for a failing test", []
+    {
+        test fail = { "F", [] { EXPECT_THAT( false, is( true ) ); } };
+
+        for (;;)
+        {
+            try { fail.behaviour(); } catch ( lest::message & ) { break; }
+            throw lest::failure(lest::location{__FILE__,__LINE__}, "no error generated", "false");
+        }
+    },
+
+    "expect_that succeeds for success (match) and failure (non-match)", []
+    {
+        test pass[] = {{ "P", [] { EXPECT_THAT( true , is( true ) ); } }};
+        test fail[] = {{ "F", [] { EXPECT_THAT( false, is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    "expect_that succeeds with an unexpected standard exception", []
+    {
+        std::string text = "hello-world";
+        test pass[] = {{ "P", [=]() { EXPECT_THAT( (throw std::runtime_error(text), true), is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( pass, os ) );
+        EXPECT( std::string::npos != os.str().find(text) );
+    },
+
+    "expect_that succeeds with an unexpected non-standard exception", []
+    {
+        test pass[] = {{ "P", [] { EXPECT_THAT( (throw 77, true), is( true ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( pass, os ) );
+    },
+
     // object:
     
     "same_instance matches properly", []
@@ -41,6 +121,16 @@ const test specification[] =
         EXPECT( false == close_to(10, 2)( 7) );
         EXPECT( false == close_to(10, 2)(13) );
         EXPECT( false == close_to(10, 2)(14) );
+        
+        EXPECT_THAT( a(), close_to( a()-2, 2) );
+        EXPECT_THAT( a(), close_to( a()+2, 2) );
+        
+        test fail[] = {{ "F1", [] { EXPECT_THAT( a(), close_to( a()-3, 2) ); }},
+                       { "F2", [] { EXPECT_THAT( a(), close_to( a()+3, 2) ); }} };
+        
+        std::ostringstream os;
+
+        EXPECT( 2 == run( fail, os ) );
     },
 
     "equal_to matches properly", []
@@ -141,9 +231,93 @@ const test specification[] =
 
     // sequence:
 
-    //using lest::contains;
-    //using lest::contains_in_any_order;
-    //using lest::has_items;
+    "set of int is empty", []
+    {
+        EXPECT(  true == is_empty()( u ) );
+        EXPECT( false == is_empty()( s ) );
+        
+        EXPECT_THAT( u, is_empty() );
+
+// not yet:
+//        EXPECT_THAT( s, is_not( is_empty() ) );
+    },
+
+    "size of set match", []
+    {
+        EXPECT(  true == size_is( s.size()   )( s ) );
+        EXPECT( false == size_is( s.size()-1 )( s ) );
+        EXPECT( false == size_is( s.size()+1 )( s ) );
+
+        EXPECT_THAT(  s, size_is( 3 ) );
+        EXPECT_THAT(  s, size_is( s.size() ) );
+        EXPECT_THAT(  s, size_is( equal_to( s.size() ) ) );
+
+        EXPECT(  true == size_is( equal_to( s.size()   ) )( s ) );
+        EXPECT( false == size_is( equal_to( s.size()+1 ) )( s ) );
+        EXPECT( false == size_is( equal_to( s.size()-1 ) )( s ) );
+
+        EXPECT_THAT(  s, size_is( equal_to( s.size() ) ) );
+    },
+
+    "set of int contains element", []
+    {
+        EXPECT(  true == contains( 1 )( s ) );
+        EXPECT(  true == contains( 2 )( s ) );
+        EXPECT(  true == contains( 3 )( s ) );
+
+        EXPECT( false == contains( 0 )( s ) );
+        EXPECT( false == contains( 4 )( s ) );
+
+        EXPECT_THAT( s, contains( 1 ) );
+        EXPECT_THAT( s, contains( 2 ) );
+        EXPECT_THAT( s, contains( 3 ) );
+
+// not yet:
+//        EXPECT_THAT( s, is_not( contains( 0 ) ) );
+//        EXPECT_THAT( s, is_not( contains( 4 ) ) );
+    },
+
+    "set of int contains sequence", []
+    {
+        EXPECT(  true == contains( { 1       } )( s ) );
+        EXPECT(  true == contains( { 1, 2    } )( s ) );
+        EXPECT(  true == contains( { 1, 2, 3 } )( s ) );
+
+        EXPECT( false == contains( { 0       } )( s ) );
+        EXPECT( false == contains( { 2, 1    } )( s ) );
+        EXPECT( false == contains( { 1, 2, 7 } )( s ) );
+
+        EXPECT_THAT(  s, contains( { 1, 2 } ) );
+
+        test fail[] = {{ "F", [] { 
+        EXPECT_THAT(  s, contains( { 2, 1 } ) ); } }};
+        
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    "set of int contains elements", []
+    {
+        EXPECT(  true == contains_elements( { 3       } )( s ) );
+        EXPECT(  true == contains_elements( { 3, 2    } )( s ) );
+        EXPECT(  true == contains_elements( { 3, 2, 1 } )( s ) );
+
+        EXPECT( false == contains_elements( { 7       } )( s ) );
+        EXPECT( false == contains_elements( { 7, 2    } )( s ) );
+        EXPECT( false == contains_elements( { 7, 2, 1 } )( s ) );
+
+        EXPECT_THAT(  s, contains_elements( { 3       } ) );
+        EXPECT_THAT(  s, contains_elements( { 3, 2    } ) );
+        EXPECT_THAT(  s, contains_elements( { 3, 2, 1 } ) );
+
+        test fail[] = {{ "F", [] { 
+        EXPECT_THAT(  s, contains_elements( { 7, 2, 1 } ) ); } }};
+        
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+    },
 
     // dictionary:
 
@@ -159,82 +333,6 @@ const test specification[] =
         EXPECT(  true == anything<int        >( "[desciption]" )(  77  ) );
         EXPECT(  true == anything<char const*>( "[desciption]" )( "77" ) );
         EXPECT(  true == anything<std::string>( "[desciption]" )( "77" ) );
-    },
-
-    "is decorates properly", []
-    {
-        EXPECT(  true == is(77)(77) );
-        EXPECT(  true == is( equal_to(77)(77) )(true) );
-        EXPECT(  true == is( hello() )( hello() ) );
-        EXPECT(  true == is( equal_to( hello() )( hello() ) )(true) );
-
-        EXPECT( false == is(77)(33) );
-        EXPECT( false == is( equal_to(77)(33) )(true) );
-        EXPECT( false == is( hello() )( world() ) );
-        EXPECT( false == is( equal_to( hello() )( world() ) )(true) );
-    },
-
-    "is_not decorates properly", []
-    {
-        EXPECT(  true == is_not(77)(33) );
-        EXPECT(  true == is_not( equal_to(77)(33) )(true) );
-        EXPECT(  true == is_not( hello() )( world() ) );
-        EXPECT(  true == is_not( equal_to( hello() )( world() ) )(true) );
-
-        EXPECT( false == is_not(77)(77) );
-        EXPECT( false == is_not( equal_to(77)(77) )(true) );
-        EXPECT( false == is_not( hello() )( hello() ) );
-        EXPECT( false == is_not( equal_to( hello() )( hello() ) )(true) );
-    },
-
-    "expect_that generates no message exception for a succeeding test", []
-    {
-        test pass = { "P", [] { EXPECT_THAT( true, is( true ) ); } };
-
-        try { pass.behaviour(); }
-        catch(...) { throw lest::failure(lest::location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
-    },
-
-    "expect_that generates a message exception for a failing test", []
-    {
-        test fail = { "F", [] { EXPECT_THAT( false, is( true ) ); } };
-
-        for (;;)
-        {
-            try { fail.behaviour(); } catch ( lest::message & ) { break; }
-            throw lest::failure(lest::location{__FILE__,__LINE__}, "no error generated", "false");
-        }
-    },
-
-    "expect_that succeeds for success (match) and failure (non-match)", []
-    {
-        test pass[] = {{ "P", [] { EXPECT_THAT( true , is( true ) ); } }};
-        test fail[] = {{ "F", [] { EXPECT_THAT( false, is( true ) ); } }};
-
-        std::ostringstream os;
-
-        EXPECT( 0 == run( pass, os ) );
-        EXPECT( 1 == run( fail, os ) );
-    },
-
-    "expect_that succeeds with an unexpected standard exception", []
-    {
-        std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT_THAT( (throw std::runtime_error(text), true), is( true ) ); } }};
-
-        std::ostringstream os;
-
-        EXPECT( 1 == run( pass, os ) );
-        EXPECT( std::string::npos != os.str().find(text) );
-    },
-
-    "expect_that succeeds with an unexpected non-standard exception", []
-    {
-        test pass[] = {{ "P", [] { EXPECT_THAT( (throw 77, true), is( true ) ); } }};
-
-        std::ostringstream os;
-
-        EXPECT( 1 == run( pass, os ) );
     },
 
     "all_of matches properly", []
