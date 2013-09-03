@@ -115,32 +115,32 @@ Matcher functions to pull in.
 **same_instance** - match same object  
 
 #### Numeric
-**close_to** -  match number within a range delta, e.g. close_to(10, 2)  
-**equal_to** - match equal, e.g. equal_to('a'), equal_to(vec)  
-**not_equal_to** - match not equal, e.g. not_equal_to("hello")  
-**less_than** - match less than, e.g. less_than(42)  
-**less_equal** - match less than or equal to, e.g. less_equal(42)    
-**greater_than** - match greater than, e.g. greater_than(42)    
-**greater_equal** - match greater than or equal to, e.g. greater_equal(42)    
+**close_to** -  match number within a range delta, e.g. `close_to(10, 2)`  
+**equal_to** - match equal, e.g. `equal_to('a')`, `equal_to(vec)`  
+**not_equal_to** - match not equal, e.g. `not_equal_to("hello")`  
+**less_than** - match less than, e.g. `less_than(42)`  
+**less_equal** - match less than or equal to, e.g. `less_equal(42)`    
+**greater_than** - match greater than, e.g. `greater_than(42)`    
+**greater_equal** - match greater than or equal to, e.g. `greater_equal(42)`    
 
 #### Textual
-**starts_with** - match the start of a string, e.g. starts_with("hello")  
-**ends_with** - match the end of a string, e.g. ends_with("world")  
-**contains** -  match part of a string, , e.g. contains("C++11")  
+**starts_with** - match the start of a string, e.g. `starts_with("hello")`  
+**ends_with** - match the end of a string, e.g. `ends_with("world")`  
+**contains** -  match part of a string, , e.g. `contains("C++11")`  
 **contains_regexp** - match part of string (excluded from test: fails with Clang 3.2 and GNUC 4.8.1)  
 **matches_regexp** - match whole string  
 
 #### Sequence
-**contains** - match a sequence in a container, e.g. contains(3), contains({3,4})
-**contains_elements** - match elements in container, e.g. contains_elements({3,4})  
-**is_empty** - match empty container, e.g. is_empty()  
-**size_is** - match size of a container, e.g. size_is(2), size_is( less_than(3) )   
+**contains** - match a sequence in a container, e.g. `contains(3)`, `contains({3,4})`  
+**contains_elements** - match elements in container, e.g. `contains_elements({3,4})`  
+**is_empty** - match empty container, e.g. `is_empty()`  
+**size_is** - match size of a container, e.g. `size_is(2)`, `size_is(less_than(3))`   
 Note: currently sequence matchers cannot be wrapped in logical matchers.  
 
 #### Logical
-**anything** - [a, an ?] match anything; takes optional description, e.g. anything<int>()  
-**is** -  decorate matcher to improve readability, or match a value, e.g. is(42)  
-**is_not** - negate the matcher, e.g. is_not(close_to(42,1))  
+**anything** - [a, an ?] match anything; takes optional description, e.g. `anything<int>()`  
+**is** -  decorate matcher to improve readability, or match a value, e.g. `is(42)`  
+**is_not** - negate the matcher, e.g. `is_not(close_to(42,1))`  
 **all_of** - _and_ all matchers, or match all values in initialiser list  
 **any_of** - _or_ all matchers, or match any value in initialiser list  
 
