@@ -132,7 +132,7 @@ Matcher functions to pull in.
 
 #### Sequence
 **contains** - match a sequence in a container, e.g. `contains(3)`, `contains({3,4})`  
-**contains_elements** - match elements in container, e.g. `contains_elements({3,4})`  
+**contains_elements** - match individual elements in container, e.g. `contains_elements({3,4})`  
 **is_empty** - match empty container, e.g. `is_empty()`  
 **size_is** - match size of a container, e.g. `size_is(2)`, `size_is(less_than(3))`   
 Note: currently sequence matchers cannot be wrapped in logical matchers.  
