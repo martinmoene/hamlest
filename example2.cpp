@@ -14,7 +14,7 @@
 #include <set>
 #include <vector>
 
-using namespace lest::match;
+using namespace lest::hamlest;
 
 int a() { return 33; }
 int b() { return 55; }
@@ -37,378 +37,378 @@ std::set<int> t{ 2, 1, 0, };
 
 const lest::test specification[] =
 {
-    "compare int (fail)", []
+    CASE("compare int (fail)")
     {
         EXPECT( 33 == 22 );
     },
 
-    "compare array<int> (pass)", []
+    CASE("compare array<int> (pass)")
     {
         EXPECT( m == m );
     },
 
-    "compare array<int> (fail)", []
+    CASE("compare array<int> (fail)")
     {
         EXPECT( m == n );
     },
 
-    "compare set<int> (pass)", []
+    CASE("compare set<int> (pass)")
     {
         EXPECT( s == s );
     },
 
-    "compare set<int> (fail)", []
+    CASE("compare set<int> (fail)")
     {
         EXPECT( s == t );
     },
 
-    "compare vector<int> (pass)", []
+    CASE("compare vector<int> (pass)")
     {
         EXPECT( p == p );
     },
 
-    "compare vector<int> (fail)", []
+    CASE("compare vector<int> (fail)")
     {
         EXPECT( p == q );
     },
 
-    "equal_to vector<int> (pass)", []
+    CASE("equal_to vector<int> (pass)")
     {
         EXPECT_THAT( p, equal_to( p ) );
     },
 
-    "equal_to vector<int> (fail)", []
+    CASE("equal_to vector<int> (fail)")
     {
         EXPECT_THAT( p, equal_to( q ) );
     },
 
-    "equal_to vector<int>, {...} (fail)", []
+    CASE("equal_to vector<int>, {...} (fail)")
     {
 //        EXPECT     ( p    ==      { 3, 3, 3, 3, }   );
 //        EXPECT_THAT( p, equal_to( { 3, 3, 3, 3, } ) );
     },
 
-    "close_to int (pass)", []
+    CASE("close_to int (pass)")
     {
         EXPECT_THAT( a() + 1, close_to( a(), 2 ) );
     },
 
-    "close_to int (fail)", []
+    CASE("close_to int (fail)")
     {
         EXPECT_THAT( a() - 5, close_to( a(), 2 ) );
     },
 
-    "equal_to int (pass)", []
+    CASE("equal_to int (pass)")
     {
         EXPECT_THAT( a(), equal_to( a() ) );
     },
 
-    "equal_to int (fail)", []
+    CASE("equal_to int (fail)")
     {
         EXPECT_THAT( a(), equal_to( b() ) );
     },
 
-    "not_equal_to int (pass)", []
+    CASE("not_equal_to int (pass)")
     {
         EXPECT_THAT( a(), not_equal_to( b() ) );
     },
 
-    "not_equal_to int (fail)", []
+    CASE("not_equal_to int (fail)")
     {
         EXPECT_THAT( a(), not_equal_to( a() ) );
     },
 
-    "less_than int (pass)", []
+    CASE("less_than int (pass)")
     {
         EXPECT_THAT( a(), less_than( b() ) );
     },
 
-    "less_than int (fail)", []
+    CASE("less_than int (fail)")
     {
         EXPECT_THAT( a(), less_than( a() ) );
     },
 
-    "less_equal int (pass)", []
+    CASE("less_equal int (pass)")
     {
         EXPECT_THAT( a(), less_equal( b() ) );
     },
 
-    "less_equal int (fail)", []
+    CASE("less_equal int (fail)")
     {
         EXPECT_THAT( b(), less_equal( a() ) );
     },
 
-    "greater_than int (pass)", []
+    CASE("greater_than int (pass)")
     {
         EXPECT_THAT( b(), greater_than( a() ) );
     },
 
-    "greater_than int (fail)", []
+    CASE("greater_than int (fail)")
     {
         EXPECT_THAT( a(), greater_than( a() ) );
     },
 
-    "greater_equal int (pass)", []
+    CASE("greater_equal int (pass)")
     {
         EXPECT_THAT( a(), greater_equal( a() ) );
     },
 
-    "greater_equal int (fail)", []
+    CASE("greater_equal int (fail)")
     {
         EXPECT_THAT( a(), greater_equal( b() ) );
     },
 
-    "equal_to string (pass)", []
+    CASE("equal_to string (pass)")
     {
         EXPECT_THAT( hello(), equal_to( hello() ) );
     },
 
-    "equal_to string (fail)", []
+    CASE("equal_to string (fail)")
     {
         EXPECT_THAT( hello(), equal_to( world() ) );
     },
 
-    "starts_with (pass)", []
+    CASE("starts_with (pass)")
     {
         EXPECT_THAT( hello(), starts_with( "hel" ) );
     },
 
-    "starts_with (fail)", []
+    CASE("starts_with (fail)")
     {
         EXPECT_THAT( hello(), starts_with( "hex" ) );
     },
 
-    "ends_with (pass)", []
+    CASE("ends_with (pass)")
     {
         EXPECT_THAT( hello(), ends_with( "lo" ) );
     },
 
-    "ends_with (fail)", []
+    CASE("ends_with (fail)")
     {
         EXPECT_THAT( hello(), ends_with( "xo" ) );
     },
 
-    "contains (pass)", []
+    CASE("contains (pass)")
     {
         EXPECT_THAT( hello(), contains( hello() ) );
     },
 
-    "contains (fail)", []
+    CASE("contains (fail)")
     {
         EXPECT_THAT( hello(), contains( world() ) );
     },
 
-    "contains (fail)", []
+    CASE("contains (fail)")
     {
         EXPECT_THAT( hello(), contains( "xx" ) );
     },
 
-    "contains_regexp (should pass; fails with GNUC 4.8.1)", []
+    CASE("contains_regexp (should pass; fails with GNUC 4.8.1)")
     {
         EXPECT_THAT( hello(), contains_regexp( "h.*o" ) );
     },
 
-    "contains_regexp (fail)", []
+    CASE("contains_regexp (fail)")
     {
         EXPECT_THAT( hello(), contains_regexp( "x" ) );
     },
 
-    "matches_regexp (pass)", []
+    CASE("matches_regexp (pass)")
     {
         EXPECT_THAT( hello(), matches_regexp( "h.*o" ) );
     },
 
-    "matches_regexp (fail)", []
+    CASE("matches_regexp (fail)")
     {
         EXPECT_THAT( hello(), matches_regexp( ".*x" ) );
     },
 
-    "anything int (pass)", []
+    CASE("anything int (pass)")
     {
         EXPECT_THAT( a(), anything<int>( "anything goes" ) );
     },
 
-    "anything int (fail)", []
+    CASE("anything int (fail)")
     {
         EXPECT_THAT( a(), is_not( anything<int>( "anything goes" ) ) );
     },
 
-    "anything char const * (pass)", []
+    CASE("anything char const * (pass)")
     {
         EXPECT_THAT( world(), anything<char const*>( "anything goes" ) );
     },
 
-    "anything char const * (fail)", []
+    CASE("anything char const * (fail)")
     {
         EXPECT_THAT( world(), is_not( anything<char const*>( "anything goes" ) ) );
     },
 
-    "anything std::string (pass)", []
+    CASE("anything std::string (pass)")
     {
         EXPECT_THAT( world(), anything<std::string>( "anything goes" ) );
     },
 
-    "anything std::string (fail)", []
+    CASE("anything std::string (fail)")
     {
         EXPECT_THAT( world(), is_not( anything<std::string>( "anything goes" ) ) );
     },
 
-    "same_instance (pass)", []
+    CASE("same_instance (pass)")
     {
         EXPECT_THAT( x, same_instance( x ) );
     },
 
-    "same_instance (fail)", []
+    CASE("same_instance (fail)")
     {
         EXPECT_THAT( x, same_instance( y ) );
     },
 
-    "is equal_to int (pass)", []
+    CASE("is equal_to int (pass)")
     {
         EXPECT_THAT( a(), is( equal_to( a() ) ) );
     },
 
-    "is equal_to int (fail)", []
+    CASE("is equal_to int (fail)")
     {
         EXPECT_THAT( a(), is( equal_to( b() ) ) );
     },
 
-    "is int (pass)", []
+    CASE("is int (pass)")
     {
         EXPECT_THAT( a(), is( a() ) );
     },
 
-    "is int (fail)", []
+    CASE("is int (fail)")
     {
         EXPECT_THAT( a(), is( b() ) );
     },
 
-    "is double (pass)", []
+    CASE("is double (pass)")
     {
         EXPECT_THAT( a(), is( 33.0) );
     },
 
-    "is double (fail)", []
+    CASE("is double (fail)")
     {
         EXPECT_THAT( a(), is( 77.0) );
     },
 
-    "is string (pass)", []
+    CASE("is string (pass)")
     {
         EXPECT_THAT( hello(), is( hello() ) );
     },
 
-    "is string (fail)", []
+    CASE("is string (fail)")
     {
         EXPECT_THAT( hello(), is( world() ) );
     },
 
-    "is_not equal_to int (pass)", []
+    CASE("is_not equal_to int (pass)")
     {
         EXPECT_THAT( a(), is_not( equal_to( b() ) ) );
     },
 
-    "is_not equal_to int (fail)", []
+    CASE("is_not equal_to int (fail)")
     {
         EXPECT_THAT( a(), is_not( equal_to( a() ) ) );
     },
 
-    "is_not int (pass)", []
+    CASE("is_not int (pass)")
     {
         EXPECT_THAT( a(), is_not( b() ) );
     },
 
-    "is_not int (fail)", []
+    CASE("is_not int (fail)")
     {
         EXPECT_THAT( a(), is_not( a() ) );
     },
 
-    "is_not double (pass)", []
+    CASE("is_not double (pass)")
     {
         EXPECT_THAT( a(), is_not( 77.0) );
     },
 
-    "is_not double (fail)", []
+    CASE("is_not double (fail)")
     {
         EXPECT_THAT( a(), is_not( 33.0) );
     },
 
-    "is_not string (pass)", []
+    CASE("is_not string (pass)")
     {
         EXPECT_THAT( hello(), is_not( world() ) );
     },
 
-    "is_not string (fail)", []
+    CASE("is_not string (fail)")
     {
         EXPECT_THAT( hello(), is_not( hello() ) );
     },
 
-    "all_of int (pass)", []
+    CASE("all_of int (pass)")
     {
         EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(a()) ) );
     },
 
-    "all_of int (fail)", []
+    CASE("all_of int (fail)")
     {
         EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(b()) ) );
     },
 
-    "all_of int sequence (pass)", []
+    CASE("all_of int sequence (pass)")
     {
         EXPECT_THAT( a(), all_of( { a(), a() } ) );
     },
 
-    "all_of int sequence (fail)", []
+    CASE("all_of int sequence (fail)")
     {
         EXPECT_THAT( a(), all_of( { a(), b() } ) );
     },
 
-    "all_of char sequence (pass)", []
+    CASE("all_of char sequence (pass)")
     {
         EXPECT_THAT( 'a', all_of( { 'a', 'a' } ) );
     },
 
-    "all_of char sequence (fail)", []
+    CASE("all_of char sequence (fail)")
     {
         EXPECT_THAT( 'a', all_of( { 'a', 'b' } ) );
     },
 
-    "all_of contains (pass)", []
+    CASE("all_of contains (pass)")
     {
         EXPECT_THAT( hello(), all_of( starts_with("hel"), ends_with("lo"), contains("ll") ) );
     },
 
-    "all_of contains (fail)", []
+    CASE("all_of contains (fail)")
     {
         EXPECT_THAT( hello(), all_of( starts_with("hel"), ends_with("lo"), contains("xx") ) );
     },
 
-    "any_of int (pass)", []
+    CASE("any_of int (pass)")
     {
         EXPECT_THAT( a(), any_of( equal_to(a()), equal_to(b()) ) );
     },
 
-    "any_of int (fail)", []
+    CASE("any_of int (fail)")
     {
         EXPECT_THAT( a(), any_of( equal_to(b()), equal_to(c()) ) );
     },
 
-    "any_of int sequence (pass)", []
+    CASE("any_of int sequence (pass)")
     {
         EXPECT_THAT( a(), any_of( { a(), b() } ) );
     },
 
-    "any_of int sequence (fail)", []
+    CASE("any_of int sequence (fail)")
     {
         EXPECT_THAT( a(), any_of( { b(), b() } ) );
     },
 
-    "any_of char sequence (pass)", []
+    CASE("any_of char sequence (pass)")
     {
         EXPECT_THAT( 'a', any_of( { 'a', 'b' } ) );
     },
 
-    "any_of char sequence (fail)", []
+    CASE("any_of char sequence (fail)")
     {
         EXPECT_THAT( 'a', any_of( { 'b', 'c' } ) );
     },

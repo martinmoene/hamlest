@@ -6,7 +6,7 @@
 #include "hamlest.hpp"
 
 using lest::test;
-using namespace lest::match;
+using namespace lest::hamlest;
 
 int a() { return 33; }
 int b() { return 55; }
@@ -22,7 +22,7 @@ std::set<int> u;
 
 const test specification[] =
 {
-    "is decorates properly", []
+    CASE("is decorates properly")
     {
         EXPECT(  true == is(77)(77) );
         EXPECT(  true == is( equal_to(77)(77) )(true) );
@@ -35,7 +35,7 @@ const test specification[] =
         EXPECT( false == is( equal_to( hello() )( world() ) )(true) );
     },
 
-    "is_not decorates properly", []
+    CASE("is_not decorates properly")
     {
         EXPECT(  true == is_not(77)(33) );
         EXPECT(  true == is_not( equal_to(77)(33) )(true) );
@@ -48,29 +48,28 @@ const test specification[] =
         EXPECT( false == is_not( equal_to( hello() )( hello() ) )(true) );
     },
 
-    "expect_that generates no message exception for a succeeding test", []
+    CASE("expect_that generates no message exception for a succeeding test")
     {
-        test pass = { "P", [] { EXPECT_THAT( true, is( true ) ); } };
+        test pass[] = {{ CASE("P") { EXPECT_THAT( true, is( true ) ); } }};
 
-        try { pass.behaviour(); }
-        catch(...) { throw lest::failure(lest::location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
+        std::ostringstream os;
+
+        EXPECT( 0 == lest::run( pass, os ) );
     },
 
-    "expect_that generates a message exception for a failing test", []
+    CASE("expect_that generates a message exception for a failing test")
     {
-        test fail = { "F", [] { EXPECT_THAT( false, is( true ) ); } };
+        test fail[] = {{ CASE("F") { EXPECT_THAT( false, is( true ) ); } }};
 
-        for (;;)
-        {
-            try { fail.behaviour(); } catch ( lest::message & ) { break; }
-            throw lest::failure(lest::location{__FILE__,__LINE__}, "no error generated", "false");
-        }
+        std::ostringstream os;
+
+        EXPECT( 0 != lest::run( fail, os ) );
     },
 
-    "expect_that succeeds for success (match) and failure (non-match)", []
+    CASE("expect_that succeeds for success (match) and failure (non-match)")
     {
-        test pass[] = {{ "P", [] { EXPECT_THAT( true , is( true ) ); } }};
-        test fail[] = {{ "F", [] { EXPECT_THAT( false, is( true ) ); } }};
+        test pass[] = {{ CASE("P") { EXPECT_THAT( true , is( true ) ); } }};
+        test fail[] = {{ CASE("F") { EXPECT_THAT( false, is( true ) ); } }};
 
         std::ostringstream os;
 
@@ -78,10 +77,10 @@ const test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "expect_that succeeds with an unexpected standard exception", []
+    CASE("expect_that succeeds with an unexpected standard exception")
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT_THAT( (throw std::runtime_error(text), true), is( true ) ); } }};
+        test pass[] = {{ CASE_ON("P", text) { EXPECT_THAT( (throw std::runtime_error(text), true), is( true ) ); } }};
 
         std::ostringstream os;
 
@@ -89,9 +88,9 @@ const test specification[] =
         EXPECT( std::string::npos != os.str().find(text) );
     },
 
-    "expect_that succeeds with an unexpected non-standard exception", []
+    CASE("expect_that succeeds with an unexpected non-standard exception")
     {
-        test pass[] = {{ "P", [] { EXPECT_THAT( (throw 77, true), is( true ) ); } }};
+        test pass[] = {{ CASE("P") { EXPECT_THAT( (throw 77, true), is( true ) ); } }};
 
         std::ostringstream os;
 
@@ -100,7 +99,7 @@ const test specification[] =
 
     // object:
     
-    "same_instance matches properly", []
+    CASE("same_instance matches properly")
     {
         int x{1}, y{2};
         EXPECT(  true == same_instance(x)(x) );
@@ -109,7 +108,7 @@ const test specification[] =
 
     // numeric:
     
-    "close_to matches properly", []
+    CASE("close_to matches properly")
     {
         EXPECT(  true == close_to(10, 2)( 8) );
         EXPECT(  true == close_to(10, 2)( 9) );
@@ -125,27 +124,27 @@ const test specification[] =
         EXPECT_THAT( a(), close_to( a()-2, 2) );
         EXPECT_THAT( a(), close_to( a()+2, 2) );
         
-        test fail[] = {{ "F1", [] { EXPECT_THAT( a(), close_to( a()-3, 2) ); }},
-                       { "F2", [] { EXPECT_THAT( a(), close_to( a()+3, 2) ); }} };
+        test fail[] = {{ CASE("F1") { EXPECT_THAT( a(), close_to( a()-3, 2) ); }},
+                       { CASE("F2") { EXPECT_THAT( a(), close_to( a()+3, 2) ); }} };
         
         std::ostringstream os;
 
         EXPECT( 2 == run( fail, os ) );
     },
 
-    "equal_to matches properly", []
+    CASE("equal_to matches properly")
     {
         EXPECT(  true == equal_to(3)(3) );
         EXPECT( false == equal_to(3)(4) );
     },
 
-    "not_equal_to matches properly", []
+    CASE("not_equal_to matches properly")
     {
         EXPECT(  true == not_equal_to(3)(4) );
         EXPECT( false == not_equal_to(3)(3) );
     },
 
-    "less_than matches properly", []
+    CASE("less_than matches properly")
     {
         EXPECT(  true == less_than(-3)(-4) );
         EXPECT(  true == less_than( 3)( 2) );
@@ -156,7 +155,7 @@ const test specification[] =
         EXPECT( false == less_than( 3)( 4) );
     },
 
-    "less_equal matches properly", []
+    CASE("less_equal matches properly")
     {
         EXPECT(  true == less_equal(-3)(-4) );
         EXPECT(  true == less_equal(-3)(-3) );
@@ -167,7 +166,7 @@ const test specification[] =
         EXPECT( false == less_equal( 3)( 4) );
     },
 
-    "greater_than matches properly", []
+    CASE("greater_than matches properly")
     {
         EXPECT(  true == greater_than(-3)(-2) );
         EXPECT(  true == greater_than( 3)( 4) );
@@ -178,7 +177,7 @@ const test specification[] =
         EXPECT( false == greater_than( 3)( 2) );
     },
 
-    "greater_equal matches properly", []
+    CASE("greater_equal matches properly")
     {
         EXPECT(  true == greater_equal(-3)(-3) );
         EXPECT(  true == greater_equal(-3)(-2) );
@@ -191,19 +190,19 @@ const test specification[] =
 
     // textual:
 
-    "starts_with matches properly", []
+    CASE("starts_with matches properly")
     {
         EXPECT(  true == starts_with( hello() )( hello_world() ) );
         EXPECT( false == starts_with( world() )( hello_world() ) );
     },
 
-    "ends_with matches properly", []
+    CASE("ends_with matches properly")
     {
         EXPECT(  true == ends_with( world() )( hello_world() ) );
         EXPECT( false == ends_with( hello() )( hello_world() ) );
     },
 
-    "contains matches properly", []
+    CASE("contains matches properly")
     {
         EXPECT(  true == contains( world() )( hello_world() ) );
         EXPECT(  true == contains( hello() )( hello_world() ) );
@@ -212,7 +211,7 @@ const test specification[] =
     },
 
 #if 0 // skip
-    "contains_regexp matches properly (fails for Clang 3.2 and GNUC 4.8.1)", []
+    CASE("contains_regexp matches properly (fails for Clang 3.2 and GNUC 4.8.1)")
     {
         EXPECT(  true == contains_regexp( hello() )( hello_world() ) );
         EXPECT(  true == contains_regexp( "h.*o"  )( hello_world() ) );
@@ -221,7 +220,7 @@ const test specification[] =
     },
 #endif
 
-    "matches_regexp matches properly", []
+    CASE("matches_regexp matches properly")
     {
         EXPECT(  true == matches_regexp( hello_world() )( hello_world() ) );
         EXPECT(  true == matches_regexp( "h.*d"  )( hello_world() ) );
@@ -231,7 +230,7 @@ const test specification[] =
 
     // sequence:
 
-    "set of int is empty", []
+    CASE("set of int is empty")
     {
         EXPECT(  true == is_empty()( u ) );
         EXPECT( false == is_empty()( s ) );
@@ -242,7 +241,7 @@ const test specification[] =
 //        EXPECT_THAT( s, is_not( is_empty() ) );
     },
 
-    "size of set match", []
+    CASE("size of set match")
     {
         EXPECT(  true == size_is( s.size()   )( s ) );
         EXPECT( false == size_is( s.size()-1 )( s ) );
@@ -259,7 +258,7 @@ const test specification[] =
         EXPECT_THAT(  s, size_is( equal_to( s.size() ) ) );
     },
 
-    "set of int contains element", []
+    CASE("set of int contains element")
     {
         EXPECT(  true == contains( 1 )( s ) );
         EXPECT(  true == contains( 2 )( s ) );
@@ -277,7 +276,7 @@ const test specification[] =
 //        EXPECT_THAT( s, is_not( contains( 4 ) ) );
     },
 
-    "set of int contains sequence", []
+    CASE("set of int contains sequence")
     {
         EXPECT(  true == contains( { 1       } )( s ) );
         EXPECT(  true == contains( { 1, 2    } )( s ) );
@@ -289,7 +288,7 @@ const test specification[] =
 
         EXPECT_THAT(  s, contains( { 1, 2 } ) );
 
-        test fail[] = {{ "F", [] { 
+        test fail[] = {{ CASE("F") { 
         EXPECT_THAT(  s, contains( { 2, 1 } ) ); } }};
         
         std::ostringstream os;
@@ -297,7 +296,7 @@ const test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "set of int contains elements", []
+    CASE("set of int contains elements")
     {
         EXPECT(  true == contains_elements( { 3       } )( s ) );
         EXPECT(  true == contains_elements( { 3, 2    } )( s ) );
@@ -311,7 +310,7 @@ const test specification[] =
         EXPECT_THAT(  s, contains_elements( { 3, 2    } ) );
         EXPECT_THAT(  s, contains_elements( { 3, 2, 1 } ) );
 
-        test fail[] = {{ "F", [] { 
+        test fail[] = {{ CASE("F") { 
         EXPECT_THAT(  s, contains_elements( { 7, 2, 1 } ) ); } }};
         
         std::ostringstream os;
@@ -328,22 +327,22 @@ const test specification[] =
 
     // logical: 
 
-    "anything matches properly", []
+    CASE("anything matches properly")
     {
         EXPECT(  true == anything<int        >( "[desciption]" )(  77  ) );
         EXPECT(  true == anything<char const*>( "[desciption]" )( "77" ) );
         EXPECT(  true == anything<std::string>( "[desciption]" )( "77" ) );
     },
 
-    "all_of matches properly", []
+    CASE("all_of matches properly")
     {
         EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(a()) ) );
         EXPECT_THAT( a(), all_of( { a(), a() } ) );
         EXPECT_THAT( 'a', all_of( { 'a', 'a' } ) );
 
-        test fail_1[] = {{ "F1", [] { EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(b()) ) ); } }};
-        test fail_2[] = {{ "F2", [] { EXPECT_THAT( a(), all_of( { a(), b() } ) ); } }};
-        test fail_3[] = {{ "F3", [] { EXPECT_THAT( 'a', all_of( { 'a', 'b' } ) ); } }};
+        test fail_1[] = {{ CASE("F1") { EXPECT_THAT( a(), all_of( equal_to(a()), equal_to(b()) ) ); } }};
+        test fail_2[] = {{ CASE("F2") { EXPECT_THAT( a(), all_of( { a(), b() } ) ); } }};
+        test fail_3[] = {{ CASE("F3") { EXPECT_THAT( 'a', all_of( { 'a', 'b' } ) ); } }};
 
         std::ostringstream os;
 
@@ -352,15 +351,15 @@ const test specification[] =
         EXPECT( 1 == run( fail_3, os ) );
     },
 
-    "any_of matches properly", []
+    CASE("any_of matches properly")
     {
         EXPECT_THAT( a(), any_of( equal_to(a()), equal_to(b()) ) );
         EXPECT_THAT( a(), any_of( { a(), b() } ) );
         EXPECT_THAT( 'a', any_of( { 'a', 'b' } ) );
 
-        test fail_1[] = {{ "F1", [] { EXPECT_THAT( a(), any_of( equal_to(b()), equal_to(c()) ) ); } }};
-        test fail_2[] = {{ "F2", [] { EXPECT_THAT( a(), any_of( { b(), b() } ) ); } }};
-        test fail_3[] = {{ "F3", [] { EXPECT_THAT( 'a', any_of( { 'b', 'c' } ) ); } }};
+        test fail_1[] = {{ CASE("F1") { EXPECT_THAT( a(), any_of( equal_to(b()), equal_to(c()) ) ); } }};
+        test fail_2[] = {{ CASE("F2") { EXPECT_THAT( a(), any_of( { b(), b() } ) ); } }};
+        test fail_3[] = {{ CASE("F3") { EXPECT_THAT( 'a', any_of( { 'b', 'c' } ) ); } }};
 
         std::ostringstream os;
 

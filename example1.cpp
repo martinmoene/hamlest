@@ -10,7 +10,7 @@
 #include "hamlest.hpp"
 #include <set>
 
-using namespace lest::match;
+using namespace lest::hamlest;
 
 std::set<int> s{ 1, 2, 3, };
 std::set<int> t{ 2, 1, 0, };
@@ -19,19 +19,19 @@ std::string hello() { return "hello C++11 world"; }
 
 const lest::test specification[] =
 {
-    "sets of int compare equal", []
+    CASE("sets of int compare equal")
     {
         EXPECT( s == s );
         EXPECT( s == t );
     },
 
-    "sets of int match equal", []
+    CASE("sets of int match equal")
     {
         EXPECT_THAT( s, equal_to( s ) );
         EXPECT_THAT( s, equal_to( t ) );
     },
 
-    "string contains substring", []
+    CASE("string contains substring")
     {
         EXPECT_THAT( hello(), starts_with( "hello" ) );
         EXPECT_THAT( hello(), ends_with( "world" ) );
@@ -39,13 +39,13 @@ const lest::test specification[] =
         EXPECT_THAT( hello(), contains( "C++14" ) );
     },
 
-    "string matches at least one string", []
+    CASE("string matches at least one string")
     {
         EXPECT_THAT( "hello", any_of( { "hello", "C++", "world" } ) );
         EXPECT_THAT( "hello", any_of( { "foo"  , "C++", "bar"   } ) );
     },
 
-    "string satisfies all constraints", []
+    CASE("string satisfies all constraints")
     {
         EXPECT_THAT( hello(), all_of( starts_with("hello"), contains("C++11"), ends_with("world") ) );
         EXPECT_THAT( hello(), all_of( starts_with("hello"), contains("C++14"), ends_with("world") ) );

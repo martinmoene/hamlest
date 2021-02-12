@@ -800,7 +800,7 @@ inline all_of_matcher<typename M::argument_type> all_of( M const & m, Ms const &
     return all_of_matcher<typename M::argument_type>( m, ms... );
 }
 
-namespace match {
+namespace hamlest {
 
 // object:
 
